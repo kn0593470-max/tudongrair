@@ -128,7 +128,7 @@ async def get_detailed_location_from_ip(ip_address):
         pass
     return {"country": "Việt Nam", "city": "Hồ Chí Minh", "region": "Miền Nam"}
 
-bot = TelegramClient('bot_manage', A_ID, A_HS, connection_retries=5, timeout=30)
+bot = None
 u_c = {}
 
 F1, F3 = "bot_users.txt", "joined_users.txt"
@@ -1643,6 +1643,8 @@ async def start_web_server():
     return runner
 
 async def main():
+    global bot
+    bot = TelegramClient('bot_manage', A_ID, A_HS, connection_retries=5, timeout=30)
     await start_web_server()
     await bot.start(bot_token=B_TK)
     for f in glob.glob("u_*.session"):
@@ -1669,7 +1671,13 @@ async def main():
 
 if __name__ == '__main__':
     try:
-        asyncio.run(main())
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(main())
     except (KeyboardInterrupt, SystemExit):
         pass
-tr
+    finally:
+        try:
+            loop.close()
+        except: pass
+er
