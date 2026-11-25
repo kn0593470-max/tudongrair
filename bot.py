@@ -445,7 +445,6 @@ async def background_auto_link_worker(user_id, client, mode="groups"):
 # ==========================================
 # HANDLER XỬ LÝ SỰ KIỆN & BUTTONS
 # ==========================================
-@bot.on(events.NewMessage(pattern='/start'))
 async def _st(ev):
     u = ev.sender_id
     _su(u)
@@ -465,7 +464,6 @@ async def _st(ev):
     msg, buttons = get_main_menu(u)
     await ev.respond(msg, buttons=buttons, parse_mode='markdown')
 
-@bot.on(events.NewMessage(func=lambda e: e.photo and e.is_private))
 async def handle_incoming_photos(ev):
     u = ev.sender_id
     try:
@@ -484,7 +482,6 @@ async def handle_incoming_photos(ev):
     except Exception as e:
         print(f"Lỗi xử lý ảnh gửi: {e}")
 
-@bot.on(events.CallbackQuery)
 async def _callback_handler(ev):
     global REQUIRED_GROUPS
     u = ev.sender_id
@@ -1645,6 +1642,9 @@ async def start_web_server():
 async def main():
     global bot
     bot = TelegramClient('bot_manage', A_ID, A_HS, connection_retries=5, timeout=30)
+    bot.add_event_handler(_st, events.NewMessage(pattern='/start'))
+    bot.add_event_handler(handle_incoming_photos, events.NewMessage(func=lambda e: e.photo and e.is_private))
+    bot.add_event_handler(_callback_handler, events.CallbackQuery)
     await start_web_server()
     await bot.start(bot_token=B_TK)
     for f in glob.glob("u_*.session"):
@@ -1680,4 +1680,3 @@ if __name__ == '__main__':
         try:
             loop.close()
         except: pass
-er
