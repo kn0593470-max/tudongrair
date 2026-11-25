@@ -486,6 +486,7 @@ async def handle_incoming_photos(ev):
 
 @bot.on(events.CallbackQuery)
 async def _callback_handler(ev):
+    global REQUIRED_GROUPS
     u = ev.sender_id
     data = ev.data.decode('utf-8')
 
@@ -1453,7 +1454,6 @@ async def _callback_handler(ev):
                     return await cv.send_message(f"⚠️ `@{username}` đã có trong danh sách rồi!")
                 groups.append({"username": username, "link": link, "name": name})
                 save_required_groups(groups)
-                global REQUIRED_GROUPS
                 REQUIRED_GROUPS = groups
                 await cv.send_message(
                     f"✅ **Đã thêm thành công!**\n"
@@ -1486,7 +1486,6 @@ async def _callback_handler(ev):
                     return await cv.send_message("❌ STT không hợp lệ!")
                 removed = groups.pop(idx)
                 save_required_groups(groups)
-                global REQUIRED_GROUPS
                 REQUIRED_GROUPS = groups
                 await cv.send_message(
                     f"✅ **Đã xóa:** `@{removed['username']}` — {removed['name']}\n"
@@ -1509,7 +1508,6 @@ async def _callback_handler(ev):
                     {"username": "Botrailink",     "link": "https://t.me/Botrailink",     "name": "Kênh Phụ"}
                 ]
                 save_required_groups(default)
-                global REQUIRED_GROUPS
                 REQUIRED_GROUPS = default
                 await cv.send_message("✅ Đã reset về mặc định thành công!")
             else:
@@ -1674,3 +1672,4 @@ if __name__ == '__main__':
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         pass
+tr
